@@ -35,7 +35,6 @@ export const generateQuote = (input: string, mode: QuoteMode): Quote => {
 };
 
 function classicTransform(text: string): string {
-  // Handle relationship/emotional content
   if (text.toLowerCase().includes("left me") || 
       text.toLowerCase().includes("broke up") || 
       text.toLowerCase().includes("ex")) {
@@ -52,12 +51,10 @@ function classicTransform(text: string): string {
     const words = text.replace(/^i am |^im /i, "").trim();
     return `EVEN AT YOUR LOWEST, YOU'RE STILL ${words.toUpperCase()} WITH A FUTURE.`;
   }
-  // Make classic more legendary
   return `LEGENDS DON'T TALK, THEY ${text.toUpperCase()}`;
 }
 
 function roastTransform(text: string): string {
-  // Transform negative situations into savage roasts
   if (text.toLowerCase().includes("left me") || 
       text.toLowerCase().includes("broke up")) {
     const comebacks = [
@@ -74,12 +71,10 @@ function roastTransform(text: string): string {
     const words = text.replace(/^i am |^im /i, "").trim();
     return `BRO, YOU'RE ${words.toUpperCase()}? EVEN THE WIFI SIGNAL IS STRONGER.`;
   }
-  // General savage roast
   return `BRO, ${text.toUpperCase()}? THAT'S CUTE. TRY HARDER.`;
 }
 
 function wholesomeTransform(text: string): string {
-  // Handle emotional content with care
   if (text.toLowerCase().includes("left me") || 
       text.toLowerCase().includes("broke up")) {
     const healing = [
@@ -95,12 +90,10 @@ function wholesomeTransform(text: string): string {
     const words = text.replace(/^i am |^im /i, "").trim();
     return `EVEN WHEN YOU FEEL ${words.toUpperCase()}, YOUR LIGHT STILL SHINES.`;
   }
-  // Make wholesome more uplifting
   return `THE WORLD NEEDS YOUR LIGHT: ${text.toUpperCase()}`;
 }
 
 function deepTransform(text: string): string {
-  // Transform pain into wisdom
   if (text.toLowerCase().includes("left me") || 
       text.toLowerCase().includes("broke up")) {
     const wisdom = [
@@ -116,7 +109,6 @@ function deepTransform(text: string): string {
     const words = text.replace(/^i am |^im /i, "").trim();
     return `THE VOID WHISPERS: EVEN ${words.toUpperCase()} IS PART OF THE JOURNEY.`;
   }
-  // Make deep more profound
   return `IN THE ENDLESS COSMOS, ${text.toUpperCase()} IS YOUR POWER.`;
 }
 
