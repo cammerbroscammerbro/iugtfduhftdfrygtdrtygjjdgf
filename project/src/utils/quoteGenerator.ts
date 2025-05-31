@@ -40,20 +40,18 @@ function classicTransform(text: string): string {
       text.toLowerCase().includes("broke up") || 
       text.toLowerCase().includes("ex")) {
     const strength = [
-      "DESTINY FAVORS THE BRAVE WHO RISE ALONE",
-      "YOUR STORY IS FAR FROM OVER",
-      "LEGENDS ARE FORGED IN SOLITUDE",
-      "EVERY SETBACK REVEALS YOUR STRENGTH",
-      "WHEN THEY LEAVE, GREATNESS STAYS"
+      "THEY LEFT? THE UNIVERSE JUST REMOVED A DISTRACTION FROM YOUR DESTINY.",
+      "SOMETIMES, THE GREATEST POWER IS WALKING ALONE.",
+      "THEY WALKED OUT, SO YOU COULD WALK INTO GREATNESS.",
+      "EVERY LOSS IS JUST THE START OF A LEGENDARY COMEBACK.",
+      "WHEN THEY LEAVE, THE REAL STORY BEGINS."
     ];
     return getRandomItem(strength);
   }
-  
-  if (text.toLowerCase().includes("i am") || text.toLowerCase().includes("im ")) {
-    const words = text.toLowerCase().replace(/^i am |^im /i, "").trim();
-    return `IN YOUR WEAKNESS LIES YOUR GREATEST POWER: ${words.toUpperCase()}`;
+  if (text.toLowerCase().startsWith("i am ") || text.toLowerCase().startsWith("im ")) {
+    const words = text.replace(/^i am |^im /i, "").trim();
+    return `EVEN AT YOUR LOWEST, YOU'RE STILL ${words.toUpperCase()} WITH A FUTURE.`;
   }
-
   // Make classic more legendary
   return `LEGENDS DON'T TALK, THEY ${text.toUpperCase()}`;
 }
@@ -67,9 +65,14 @@ function roastTransform(text: string): string {
       "HEARTBREAK? NAH, JUST TOOK OUT THE TRASH",
       "THEY LEFT? THE AIR JUST GOT CLEANER",
       "CONGRATS, YOU JUST LEVELED UP WITHOUT DEAD WEIGHT",
-      "THEY LEFT BECAUSE THEY COULDN'T HANDLE PREMIUM"
+      "THEY LEFT BECAUSE THEY COULDN'T HANDLE PREMIUM",
+      "THEY LEFT YOU? THAT'S CALLED GARBAGE DAY."
     ];
     return getRandomItem(comebacks);
+  }
+  if (text.toLowerCase().startsWith("i am ") || text.toLowerCase().startsWith("im ")) {
+    const words = text.replace(/^i am |^im /i, "").trim();
+    return `BRO, YOU'RE ${words.toUpperCase()}? EVEN THE WIFI SIGNAL IS STRONGER.`;
   }
   // General savage roast
   return `BRO, ${text.toUpperCase()}? THAT'S CUTE. TRY HARDER.`;
@@ -88,7 +91,10 @@ function wholesomeTransform(text: string): string {
     ];
     return getRandomItem(healing);
   }
-
+  if (text.toLowerCase().startsWith("i am ") || text.toLowerCase().startsWith("im ")) {
+    const words = text.replace(/^i am |^im /i, "").trim();
+    return `EVEN WHEN YOU FEEL ${words.toUpperCase()}, YOUR LIGHT STILL SHINES.`;
+  }
   // Make wholesome more uplifting
   return `THE WORLD NEEDS YOUR LIGHT: ${text.toUpperCase()}`;
 }
@@ -106,7 +112,10 @@ function deepTransform(text: string): string {
     ];
     return getRandomItem(wisdom);
   }
-
+  if (text.toLowerCase().startsWith("i am ") || text.toLowerCase().startsWith("im ")) {
+    const words = text.replace(/^i am |^im /i, "").trim();
+    return `THE VOID WHISPERS: EVEN ${words.toUpperCase()} IS PART OF THE JOURNEY.`;
+  }
   // Make deep more profound
   return `IN THE ENDLESS COSMOS, ${text.toUpperCase()} IS YOUR POWER.`;
 }
