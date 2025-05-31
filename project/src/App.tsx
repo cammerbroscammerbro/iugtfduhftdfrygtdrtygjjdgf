@@ -14,14 +14,16 @@ function App() {
   const [currentQuote, setCurrentQuote] = useState<IQuote | null>(null);
   const [quoteHistory, setQuoteHistory] = useState<IQuote[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedBgType, setSelectedBgType] = useState('solid-black');
 
   // Load quote history from localStorage on initial render
   useEffect(() => {
     setQuoteHistory(getQuoteHistory());
   }, []);
 
-  const handleGenerateQuote = (text: string) => {
+  const handleGenerateQuote = (text: string, bgType: string) => {
     setIsGenerating(true);
+    setSelectedBgType(bgType);
     
     // Simulate a slight delay for the "generating" effect
     setTimeout(() => {
@@ -41,7 +43,7 @@ function App() {
     
     // If there's already a quote, regenerate it with the new mode
     if (currentQuote) {
-      handleGenerateQuote(currentQuote.originalText);
+      handleGenerateQuote(currentQuote.originalText, selectedBgType);
     }
   };
 
@@ -56,19 +58,19 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-black py-8 px-4 flex flex-col items-center justify-center">
-      <div className="w-full max-w-2xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8 px-4">
+      <div className="max-w-lg mx-auto">
         <header className="text-center mb-8">
           <div className="flex items-center justify-center mb-2">
-            <Quote size={32} className="text-white mr-2 drop-shadow-lg" />
-            <h1 className="text-4xl font-bold text-white tracking-wide drop-shadow-lg">Quotify</h1>
+            <Quote size={32} className="text-indigo-600 mr-2" />
+            <h1 className="text-4xl font-bold text-gray-800">Quotify</h1>
           </div>
-          <p className="text-gray-300 text-lg font-serif max-w-xl mx-auto">
-            Turn anything you say into a beautifully dramatic, motivational, or savage poster.
+          <p className="text-gray-600">
+            Turn anything you say into a beautifully dramatic, motivational poster
           </p>
         </header>
 
-        <main className="bg-[#181818] rounded-2xl shadow-2xl p-8 mb-8 border border-[#232526]">
+        <main className="bg-white rounded-xl shadow-sm p-6 mb-8">
           <ModeSelector 
             selectedMode={selectedMode} 
             onSelectMode={handleSelectMode} 
@@ -78,7 +80,7 @@ function App() {
             isGenerating={isGenerating} 
           />
           <div className="mt-8">
-            <QuoteDisplay quote={currentQuote} />
+            <QuoteDisplay quote={currentQuote} bgType={selectedBgType} />
           </div>
         </main>
 
