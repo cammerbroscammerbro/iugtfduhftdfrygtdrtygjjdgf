@@ -23,17 +23,21 @@ function App() {
 
   const handleGenerateQuote = (text: string, bgType: string) => {
     setIsGenerating(true);
-    setSelectedBgType(bgType);
-    
-    // Simulate a slight delay for the "generating" effect
+    // If user selects 'random', pick a random background (not solid-black)
+    let finalBgType = bgType;
+    if (bgType === 'random') {
+      const bgImages = [
+        'mountain', 'landscape', 'lake', 'city', 'computer', 'neon', 'desert'
+      ];
+      finalBgType = bgImages[Math.floor(Math.random() * bgImages.length)];
+    }
+    setSelectedBgType(finalBgType);
     setTimeout(() => {
       const newQuote = generateQuote(text, selectedMode);
-      setCurrentQuote(newQuote);
-      
-      // Save to history
-      saveQuoteToHistory(newQuote);
+      setCurrentQuote({ ...newQuote, bgType: finalBgType });
+      // Save to history with the selected background type
+      saveQuoteToHistory({ ...newQuote, bgType: finalBgType });
       setQuoteHistory(getQuoteHistory());
-      
       setIsGenerating(false);
     }, 800);
   };
@@ -52,9 +56,10 @@ function App() {
     setQuoteHistory([]);
   };
 
-  const handleSelectHistoryQuote = (quote: IQuote) => {
+  const handleSelectHistoryQuote = (quote: IQuote & { bgType?: string }) => {
     setCurrentQuote(quote);
     setSelectedMode(quote.mode);
+    if (quote.bgType) setSelectedBgType(quote.bgType);
   };
 
   return (
