@@ -1,121 +1,131 @@
-import { Quote, QuoteMode } from '../types';
+import React, { useRef, useState } from 'react';
+import { Download, Share2 } from 'lucide-react';
+import { Quote } from '../types';
+import { getGradientForMode } from '../utils/styleUtils';
 
-export const generateQuote = (input: string, mode: QuoteMode): Quote => {
-  let transformedText = input.trim();
-  let emoji = '';
+const POSTER_IMAGES = [
+	{
+		label: 'Solid Black',
+		value: 'solid-black',
+		url: '',
+	},
+	{
+		label: 'Classic Mountain',
+		value: 'mountain',
+		url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+	},
+	{
+		label: 'Golden Landscape',
+		value: 'landscape',
+		url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=800&q=80',
+	},
+	{
+		label: 'Dreamy Lake',
+		value: 'lake',
+		url: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=800&q=80',
+	},
+	{
+		label: 'Sunset Vista',
+		value: 'sunset',
+		url: 'https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80',
+	},
+	{
+		label: 'Skyscraper City',
+		value: 'city',
+		url: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=800&q=80',
+	},
+	{
+		label: 'Futuristic Computer',
+		value: 'computer',
+		url: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80',
+	},
+	{
+		label: 'Neon Night',
+		value: 'neon',
+		url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+	},
+	{
+		label: 'Desert Road',
+		value: 'desert',
+		url: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80',
+	},
+];
 
-  // Remove ending punctuation if present
-  transformedText = transformedText.replace(/[.!?]$/, '');
+interface QuoteDisplayProps {
+	quote: Quote | null;
+	bgType: string;
+}
 
-  switch (mode) {
-    case 'classic':
-      transformedText = classicTransform(transformedText);
-      emoji = getRandomEmoji(['💫', '⚡', '🌟', '✨', '💪', '🦁', '👑']);
-      break;
-    case 'roast':
-      transformedText = roastTransform(transformedText);
-      emoji = getRandomEmoji(['💅', '👑', '💎', '✨', '🔥', '⚡', '💫']);
-      break;
-    case 'wholesome':
-      transformedText = wholesomeTransform(transformedText);
-      emoji = getRandomEmoji(['💖', '🌸', '✨', '💫', '🦋', '🌈', '💝']);
-      break;
-    case 'deep':
-      transformedText = deepTransform(transformedText);
-      emoji = getRandomEmoji(['🌌', '💫', '🌊', '🕊️', '🌙', '⭐', '✨']);
-      break;
-  }
+const QuoteDisplay: React.FC<QuoteDisplayProps> = ({ quote, bgType }) => {
+	const quoteRef = useRef<HTMLDivElement>(null);
+	const [copied, setCopied] = useState(false);
 
-  return {
-    text: transformedText,
-    mode,
-    emoji,
-    originalText: input
-  };
+	if (!quote) {
+		return (
+			<div className="w-full max-w-md mx-auto rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center p-16">
+				<p className="text-gray-500 text-center">
+					Enter text above to generate your quote
+				</p>
+			</div>
+		);
+	}
+
+	const handleDownload = async () => {
+		if (!quoteRef.current) return;
+		try {
+			alert('In a complete implementation, this would download the quote as an image.');
+		} catch (error) {
+			console.error('Error downloading quote:', error);
+		}
+	};
+
+	const handleShare = async () => {
+		try {
+			const { text } = quote;
+			if (navigator.share) {
+				await navigator.share({
+					title: 'Quotify Poster',
+					text: text,
+					url: window.location.href
+				});
+			} else if (navigator.clipboard) {
+				await navigator.clipboard.writeText(text);
+				setCopied(true);
+				setTimeout(() => setCopied(false), 2000);
+				alert('Quote copied to clipboard!');
+			} else {
+				setCopied(true);
+				setTimeout(() => setCopied(false), 2000);
+				alert('Copy this quote: ' + text);
+			}
+		} catch (error) {
+			console.error('Error sharing quote:', error);
+		}
+	};
+
+	const { mode, text, emoji } = quote;
+	const backgroundStyle = getGradientForMode(mode);
+	const selectedBg = bgType === 'random'
+		? POSTER_IMAGES[Math.floor(Math.random() * (POSTER_IMAGES.length - 1)) + 1] // skip solid-black for random
+		: POSTER_IMAGES.find(bg => bg.value === bgType) || POSTER_IMAGES[0];
+
+	return (
+		<div className="w-full max-w-md mx-auto mb-8">
+			<div
+				ref={quoteRef}
+				className={`quote-poster relative w-full aspect-square flex items-center justify-center`}
+				style={selectedBg.value === 'solid-black' ? { background: '#000' } : { background: `url('${selectedBg.url}') center/cover no-repeat` }}
+			>
+				<div className="text-center relative z-10">
+					<div className="w-16 h-1 bg-gray-200 mx-auto mb-8" />
+					<p className="quote-text">{text}</p>
+					{emoji && <p className="quote-emoji">{emoji}</p>}
+					<div className="w-16 h-1 bg-gray-200 mx-auto mt-8" />
+				</div>
+			</div>
+		</div>
+	);
 };
 
-function classicTransform(text: string): string {
-  if (text.toLowerCase().includes("left me") || 
-      text.toLowerCase().includes("broke up") || 
-      text.toLowerCase().includes("ex")) {
-    const strength = [
-      "SOMETIMES, THE UNIVERSE REMOVES PEOPLE TO CLEAR YOUR PATH TO GREATNESS.",
-      "THEY LEFT? THAT'S THE UNIVERSE MAKING ROOM FOR YOUR LEGEND.",
-      "EVERY LOSS IS THE START OF A LEGENDARY COMEBACK.",
-      "WHEN THEY LEAVE, THE REAL STORY BEGINS.",
-      "THEY WALKED OUT SO YOU COULD WALK INTO YOUR POWER."
-    ];
-    return getRandomItem(strength);
+export default QuoteDisplay;
   }
-  if (text.toLowerCase().startsWith("i am ") || text.toLowerCase().startsWith("im ")) {
-    const words = text.replace(/^i am |^im /i, "").trim();
-    return `EVEN AT YOUR LOWEST, YOU'RE STILL DESTINED FOR GREATNESS.`;
-  }
-  return `THE WORLD BOWS TO THOSE WHO DARE TO ${text.toUpperCase()}`;
-}
-
-function roastTransform(text: string): string {
-  if (text.toLowerCase().includes("left me") || 
-      text.toLowerCase().includes("broke up")) {
-    const comebacks = [
-      "BRO, EVEN GOOGLE CAN'T FIND WHO ASKED.",
-      "HEARTBREAK? NAH, JUST TOOK OUT THE TRASH.",
-      "THEY LEFT? THE AIR JUST GOT CLEANER.",
-      "CONGRATS, YOU JUST LEVELED UP WITHOUT DEAD WEIGHT.",
-      "THEY LEFT BECAUSE THEY COULDN'T HANDLE PREMIUM.",
-      "THEY LEFT YOU? THAT'S CALLED GARBAGE DAY."
-    ];
-    return getRandomItem(comebacks);
-  }
-  if (text.toLowerCase().startsWith("i am ") || text.toLowerCase().startsWith("im ")) {
-    const words = text.replace(/^i am |^im /i, "").trim();
-    return `BRO, YOU'RE ${words.toUpperCase()}? EVEN THE WIFI SIGNAL IS STRONGER.`;
-  }
-  return `BRO, ${text.toUpperCase()}? THAT'S CUTE. TRY HARDER.`;
-}
-
-function wholesomeTransform(text: string): string {
-  if (text.toLowerCase().includes("left me") || 
-      text.toLowerCase().includes("broke up")) {
-    const healing = [
-      "YOUR HEART WILL WRITE LEGENDS OF LOVE AGAIN.",
-      "IN YOUR HEALING LIES A BEAUTIFUL STORY.",
-      "THIS PAIN SHAPES YOUR MASTERPIECE.",
-      "YOUR SOUL GROWS MORE BEAUTIFUL THROUGH STORMS.",
-      "LOVE LEFT A WARRIOR IN ITS WAKE."
-    ];
-    return getRandomItem(healing);
-  }
-  if (text.toLowerCase().startsWith("i am ") || text.toLowerCase().startsWith("im ")) {
-    const words = text.replace(/^i am |^im /i, "").trim();
-    return `EVEN WHEN YOU FEEL ${words.toUpperCase()}, YOUR LIGHT STILL SHINES.`;
-  }
-  return `THE WORLD NEEDS YOUR LIGHT: ${text.toUpperCase()}`;
-}
-
-function deepTransform(text: string): string {
-  if (text.toLowerCase().includes("left me") || 
-      text.toLowerCase().includes("broke up")) {
-    const wisdom = [
-      "IN THE DEPTHS OF LOSS, DESTINY FORGES LEGENDS.",
-      "THROUGH BROKEN HEARTS, WARRIORS RISE.",
-      "YOUR SOLITUDE IS THE UNIVERSE'S EMBRACE.",
-      "PAIN CREATES THE DIAMONDS OF TOMORROW.",
-      "IN YOUR DARKNESS, STARS ARE BORN."
-    ];
-    return getRandomItem(wisdom);
-  }
-  if (text.toLowerCase().startsWith("i am ") || text.toLowerCase().startsWith("im ")) {
-    const words = text.replace(/^i am |^im /i, "").trim();
-    return `THE VOID WHISPERS: EVEN ${words.toUpperCase()} IS PART OF THE JOURNEY.`;
-  }
-  return `IN THE ENDLESS COSMOS, ${text.toUpperCase()} IS YOUR POWER.`;
-}
-
-function getRandomItem<T>(array: T[]): T {
-  return array[Math.floor(Math.random() * array.length)];
-}
-
-function getRandomEmoji(emojis: string[]): string {
-  return emojis[Math.floor(Math.random() * emojis.length)];
-}
